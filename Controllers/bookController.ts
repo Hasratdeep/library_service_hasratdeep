@@ -20,10 +20,24 @@ export const addBook = (req: Request, res: Response): void => {
     try {
         const newBook = req.body;
         const createdBook = bookService.addBook(newBook);
+        const { title, author, genre } = req.body
+        if (title) return 
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "Title is required."
+            })
+        if (author) return 
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "Author is required."
+            })
+        if (genre) return 
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "genre is required."
+            })      
         res.status(HTTP_STATUS.CREATED).json({
             message: "Book added",
             data: createdBook,
         });
+        const bookCreated = bookService.addBook({ title, author, genre});
     } catch (error) {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             message: "Error adding book",
@@ -74,14 +88,37 @@ export const deleteBook = (req: Request, res: Response): void => {
 export const borrowBook = (req: Request, res: Response): void => {
     try {
         const { id } = req.params;
-        const borrowerId = req.body.borrowerId;
+        const { borrowerId } = req.body;
+        const result = bookService.borrowBook(id, borrowerId);
+        // Validate book id//
+        if ( id !== "undefined") (id == null);{
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "Book Id is required",
+            });
+        // Validate borrower id//
+        if ( borrowerId !== undefined)( borrowerId == null);{
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "borrowerID is required",
+            });
+        }
+        if ( borrowerId == "string") {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "borrowerID should be string.",
+            });
+        }
+        if ( borrowerId() == " ") {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: " borrowerID cannot be empty.",
+            })
+        }
         const result = bookService.borrowBook(id, borrowerId);
         if (result) {
             res.status(HTTP_STATUS.OK).json({
                 message: "Book borrowed",
                 data: result,
             });
-        } else {
+        }
+        else;
             res.status(HTTP_STATUS.NOT_FOUND).json({
                 message: "Book not found or already borrowed",
             });
@@ -92,6 +129,7 @@ export const borrowBook = (req: Request, res: Response): void => {
         });
     }
 };
+
 
 export const returnBook = (req: Request, res: Response): void => {
     try {
