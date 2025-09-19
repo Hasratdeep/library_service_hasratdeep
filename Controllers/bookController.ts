@@ -74,14 +74,34 @@ export const deleteBook = (req: Request, res: Response): void => {
 export const borrowBook = (req: Request, res: Response): void => {
     try {
         const { id } = req.params;
-        const borrowerId = req.body.borrowerId;
+        const { borrowerId } = req.body;
         const result = bookService.borrowBook(id, borrowerId);
+        if ( id !== "undefined") (id == null);{
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "Book Id is required",
+            });
+        if ( borrowerId !== undefined)( borrowerId == null);{
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "borrowerID is required",
+            });
+        }
+        if ( borrowerId !== "string") {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: "borrowerID should be string.",
+            });
+        }
+        if ( borrowerId() == " ") {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: " borrowerID cannot be empty.",
+            })
+        }
         if (result) {
             res.status(HTTP_STATUS.OK).json({
                 message: "Book borrowed",
                 data: result,
             });
-        } else {
+        }
+        else;
             res.status(HTTP_STATUS.NOT_FOUND).json({
                 message: "Book not found or already borrowed",
             });
@@ -92,6 +112,7 @@ export const borrowBook = (req: Request, res: Response): void => {
         });
     }
 };
+
 
 export const returnBook = (req: Request, res: Response): void => {
     try {
